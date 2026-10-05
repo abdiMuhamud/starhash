@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="sh_night">#13104A</color>
+    <color name="sh_night">#161619</color>
     <color name="sh_background">#E6E9F1</color>
-    <color name="sh_night_bg">#0E0C26</color>
-    <color name="sh_teal">#00C2A8</color>
+    <color name="sh_night_bg">#111114</color>
+    <color name="sh_green">#4CD08A</color>
+    <color name="sh_blue">#5B8DEF</color>
 </resources>

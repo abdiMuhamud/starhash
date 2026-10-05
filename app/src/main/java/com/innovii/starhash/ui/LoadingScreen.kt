@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.sp
 /** Shown for a moment when the app opens: StarHash in the middle, INNOVII at the bottom. */
 @Composable
 fun LoadingScreen() {
-    Box(Modifier.fillMaxSize().background(DarkPalette.background)) {
+    Box(Modifier.fillMaxSize().background(DarkPalette.bg)) {
         Column(
             Modifier.align(Alignment.Center),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -31,12 +31,12 @@ fun LoadingScreen() {
         ) {
             Logo(84.dp)
             Spacer(Modifier.height(18.dp))
-            Text("StarHash", color = Color.White, fontWeight = FontWeight.ExtraBold, fontSize = 32.sp)
-            Text("USSD & VAS quality checks", color = DarkPalette.muted, fontSize = 14.sp)
+            Text("StarHash", color = DarkPalette.text, fontWeight = FontWeight.ExtraBold, fontSize = 32.sp)
+            Text("USSD & VAS quality checks", color = DarkPalette.text2, fontSize = 14.sp)
             Spacer(Modifier.height(28.dp))
             LinearProgressIndicator(
-                color = Sh.Teal,
-                trackColor = DarkPalette.line,
+                color = Sh.Green,
+                trackColor = DarkPalette.stroke,
                 modifier = Modifier.width(140.dp),
             )
         }
@@ -44,9 +44,9 @@ fun LoadingScreen() {
             Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(bottom = 36.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text("by", color = DarkPalette.muted, fontSize = 12.sp)
+            Text("by", color = DarkPalette.text3, fontSize = 12.sp)
             Spacer(Modifier.height(8.dp))
-            InnoviiLogo(height = 34.dp)
+            InnoviiLogo(height = 30.dp, onDark = true)
         }
     }
 }

@@ -61,9 +61,9 @@ object ReportFormat {
     private fun esc(s: String) = s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\"", "&quot;")
 
     private fun color(s: Status) = when (s) {
-        Status.PASS -> "#0F9D58"
-        Status.WARN -> "#E8A100"
-        Status.FAIL -> "#D93025"
+        Status.PASS -> "#1FA463"
+        Status.WARN -> "#C98A0C"
+        Status.FAIL -> "#D9474E"
         Status.BLOCKED -> "#6B7280"
     }
 
@@ -71,18 +71,18 @@ object ReportFormat {
         append(
             """<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>StarHash QA report</title><style>
-body{margin:0;background:#F4F6FB;color:#111827;font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+body{margin:0;background:#ECEEF2;color:#15161A;font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
 .wrap{max-width:860px;margin:0 auto;padding:16px}
-header{background:#13104A;color:#fff;border-radius:16px;padding:20px}
+header{background:#161619;color:#ECEDF1;border-radius:20px;padding:22px;border-top:4px solid #5B8DEF;border-image:linear-gradient(90deg,#5B8DEF,#4CD08A) 1}
 header h1{margin:0;font-size:22px}header .sub{opacity:.8;margin-top:4px}
 .pill{display:inline-block;border-radius:999px;padding:2px 10px;font-weight:700;font-size:12px;color:#fff}
-.card{background:#fff;border-radius:14px;margin-top:12px;padding:14px 16px;border-left:6px solid #ccc;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.card{background:#F6F7F9;border-radius:16px;margin-top:12px;padding:14px 16px;border-left:6px solid #ccc;box-shadow:0 1px 2px rgba(0,0,0,.06)}
 .card h2{margin:0;font-size:16px}.route{color:#6B7280;font-family:ui-monospace,monospace;font-size:13px}
 .sum{margin:6px 0 0}.kv{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:8px;font-size:13px;color:#374151}
 pre{white-space:pre-wrap;background:#F3F4F6;border-radius:8px;padding:8px;margin:6px 0;font-size:12.5px}
 table{border-collapse:collapse;width:100%;font-size:12.5px;margin-top:8px}td{border-top:1px solid #E5E7EB;padding:4px 6px;vertical-align:top}
 td.t{color:#6B7280;white-space:nowrap}td.k{font-weight:700;white-space:nowrap}
-details summary{cursor:pointer;color:#4338CA;margin-top:8px;font-size:13px}
+details summary{cursor:pointer;color:#3F74DE;margin-top:8px;font-size:13px}
 </style></head><body><div class="wrap">""",
         )
         append("<header><h1>StarHash QA report</h1><div class=\"sub\">INNOVII · ${esc(r.title)} · ${esc(date(r.startedAt))}</div>")

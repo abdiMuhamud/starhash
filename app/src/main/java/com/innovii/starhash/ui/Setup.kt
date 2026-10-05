@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -61,7 +60,7 @@ fun openAppInfo(context: Context) {
 
 @Composable
 fun SetupCard(state: SetupState, engine: Engine, onAskPermissions: () -> Unit, context: Context) {
-    WhiteCard {
+    Panel {
         Column(Modifier.padding(16.dp)) {
             Text("Get the phone ready", fontWeight = FontWeight.Bold, fontSize = 17.sp)
             Text(
@@ -101,8 +100,8 @@ fun SetupCard(state: SetupState, engine: Engine, onAskPermissions: () -> Unit, c
                             "or the phone may switch the service off.",
                         fontSize = 12.sp, color = Sh.Muted, modifier = Modifier.padding(top = 8.dp),
                     )
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        FilledTonalButton(onClick = { openAppInfo(context) }) { Text("Open App info") }
+                    Row(Modifier.padding(top = 12.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                        SoftButton("Open App info", onClick = { openAppInfo(context) })
                         TextButton(onClick = { openAccessibilitySettings(context) }) { Text("Accessibility") }
                     }
                 }
@@ -122,7 +121,7 @@ private fun SetupRow(done: Boolean, title: String, text: String, action: String,
         }
         if (!done) {
             Spacer(Modifier.width(8.dp))
-            FilledTonalButton(onClick = onAction) { Text(action) }
+            SoftButton(action, onClick = onAction)
         }
     }
 }

@@ -22,6 +22,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -36,6 +37,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -171,17 +173,24 @@ private fun AppRoot(app: StarHashApp, activity: ComponentActivity) {
         contentColor = Sh.Ink,
         bottomBar = {
             if (page in tabs) {
-                NavigationBar(containerColor = Sh.Bar) {
+                NavigationBar(containerColor = Sh.Bar, tonalElevation = 0.dp) {
+                    val item = NavigationBarItemDefaults.colors(
+                        selectedIconColor = Sh.Accent,
+                        selectedTextColor = Sh.Ink,
+                        indicatorColor = Sh.Accent.copy(alpha = 0.16f),
+                        unselectedIconColor = Sh.Faint,
+                        unselectedTextColor = Sh.Faint,
+                    )
                     NavigationBarItem(
-                        selected = page == Page.Tests, onClick = { stack = listOf(Page.Tests) },
+                        selected = page == Page.Tests, onClick = { stack = listOf(Page.Tests) }, colors = item,
                         icon = { Icon(Icons.Filled.Home, contentDescription = null) }, label = { Text("Tests") },
                     )
                     NavigationBarItem(
-                        selected = page == Page.Reports, onClick = { stack = listOf(Page.Reports) },
+                        selected = page == Page.Reports, onClick = { stack = listOf(Page.Reports) }, colors = item,
                         icon = { Icon(Icons.AutoMirrored.Filled.List, contentDescription = null) }, label = { Text("Reports") },
                     )
                     NavigationBarItem(
-                        selected = page == Page.Settings, onClick = { stack = listOf(Page.Settings) },
+                        selected = page == Page.Settings, onClick = { stack = listOf(Page.Settings) }, colors = item,
                         icon = { Icon(Icons.Filled.Settings, contentDescription = null) }, label = { Text("Settings") },
                     )
                 }
@@ -191,7 +200,8 @@ private fun AppRoot(app: StarHashApp, activity: ComponentActivity) {
         Box(Modifier.fillMaxSize().padding(inner)) {
             when (val p = page) {
                 Page.Tests -> HomeScreen(
-                    ws = ws, setup = setup, simLabel = simLabel, live = live, context = context,
+                    ws = ws, setup = setup, simLabel = simLabel, live = live, lastReport = reports.firstOrNull(), context = context,
+                    onOpenReport = { go(Page.Report(it)) },
                     onAskPermissions = { permissions.launch(PERMISSIONS) },
                     onRun = ::launch,
                     onOpenRun = { go(Page.Run) },

@@ -52,7 +52,7 @@ fun SettingsScreen(
         PageHeader("Settings", onBack = null)
         Column(Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 16.dp)) {
             SectionTitle("How to reach the network")
-            WhiteCard {
+            Panel {
                 Column(Modifier.padding(vertical = 6.dp)) {
                     EngineRow(Engine.SCREEN, settings.engine, "Dials like a person and answers the menus in the pop-ups. Needs the accessibility service. Best for *400#.", onChange)
                     EngineRow(Engine.ONE_SHOT, settings.engine, "Android's USSD API, no pop-ups. Sends menus as one code (*400*4*1#), so only for networks that accept chained codes.", onChange)
@@ -61,7 +61,7 @@ fun SettingsScreen(
             }
 
             SectionTitle("Pace", "How fast StarHash answers the menus")
-            WhiteCard {
+            Panel {
                 Column(Modifier.padding(vertical = 6.dp)) {
                     Choice(
                         Pace.HUMAN.label,
@@ -80,7 +80,7 @@ fun SettingsScreen(
             }
 
             SectionTitle("SIM")
-            WhiteCard {
+            Panel {
                 Column(Modifier.padding(vertical = 6.dp)) {
                     Choice("Phone default", "The SIM the phone uses for calls", settings.subscriptionId == -1) { onChange { s -> s.copy(subscriptionId = -1) } }
                     for (sim in sims) {
@@ -110,7 +110,7 @@ fun SettingsScreen(
             NumberSetting("Wait for the balance SMS", settings.smsWaitSec, 0..120) { v -> onChange { it.copy(smsWaitSec = v) } }
 
             SectionTitle("Appearance")
-            WhiteCard {
+            Panel {
                 Column(Modifier.padding(vertical = 6.dp)) {
                     for (a in Appearance.entries) {
                         Choice(
@@ -127,7 +127,7 @@ fun SettingsScreen(
             }
 
             SectionTitle("Demo network")
-            WhiteCard {
+            Panel {
                 Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
                     Column(Modifier.weight(1f)) {
                         Text("Demo balance ${UssdText.money(demoBalance)} USD", fontWeight = FontWeight.SemiBold)

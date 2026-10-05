@@ -155,7 +155,7 @@ fun EditTestScreen(
             }
             Button(
                 onClick = { onSave(build()); onBack() }, enabled = valid, modifier = Modifier.weight(1f),
-                colors = ButtonDefaults.buttonColors(containerColor = Sh.Violet),
+                colors = ButtonDefaults.buttonColors(containerColor = Sh.Blue),
             ) { Text("Save") }
         }
     }
