@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">StarHash</string>
+    <string name="accessibility_label">StarHash USSD tester</string>
+    <string name="accessibility_description">Lets StarHash read the USSD pop-ups of *122# and *400# and type the menu answers during a QA test. It only acts while you run a test in StarHash, and reads nothing else.</string>
+</resources>
