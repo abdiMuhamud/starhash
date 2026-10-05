@@ -31,7 +31,7 @@ fun SectionTitle(title: String, hint: String? = null, modifier: Modifier = Modif
 @Composable
 fun WhiteCard(modifier: Modifier = Modifier, onClick: (() -> Unit)? = null, content: @Composable () -> Unit) {
     val shape = RoundedCornerShape(16.dp)
-    val colors = CardDefaults.cardColors(containerColor = Color.White)
+    val colors = CardDefaults.cardColors(containerColor = Sh.Card, contentColor = Sh.Ink)
     val elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     if (onClick != null) {
         Card(onClick = onClick, modifier = modifier.fillMaxWidth(), shape = shape, colors = colors, elevation = elevation) { content() }
@@ -45,7 +45,7 @@ fun NightCard(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = Sh.Night, contentColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = Sh.Hero, contentColor = Color.White),
     ) { content() }
 }
 

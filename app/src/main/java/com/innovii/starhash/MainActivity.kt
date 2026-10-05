@@ -3,11 +3,14 @@ package com.innovii.starhash
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -24,23 +27,26 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.innovii.starhash.core.Appearance
 import com.innovii.starhash.core.Defaults
 import com.innovii.starhash.core.Engine
 import com.innovii.starhash.core.TestCase
 import com.innovii.starhash.core.UssdText
 import com.innovii.starhash.ui.EditTestScreen
 import com.innovii.starhash.ui.HomeScreen
+import com.innovii.starhash.ui.LoadingScreen
 import com.innovii.starhash.ui.PERMISSIONS
 import com.innovii.starhash.ui.ReportScreen
 import com.innovii.starhash.ui.ReportsScreen
@@ -51,13 +57,39 @@ import com.innovii.starhash.ui.Sh
 import com.innovii.starhash.ui.StarHashTheme
 import com.innovii.starhash.ui.openAccessibilitySettings
 import com.innovii.starhash.ussd.Sims
+import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         val app = application as StarHashApp
-        setContent { StarHashTheme { AppRoot(app, this) } }
+        setContent {
+            val ws by app.store.workspace.collectAsStateWithLifecycle()
+            val dark = when (ws.settings.appearance) {
+                Appearance.DARK -> true
+                Appearance.LIGHT -> false
+                Appearance.PHONE -> isSystemInDarkTheme()
+            }
+            LaunchedEffect(dark) {
+                val bars = if (dark) {
+                    SystemBarStyle.dark(android.graphics.Color.TRANSPARENT)
+                } else {
+                    SystemBarStyle.light(android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT)
+                }
+                enableEdgeToEdge(statusBarStyle = bars, navigationBarStyle = bars)
+            }
+            StarHashTheme(dark) {
+                // The loading screen: StarHash and INNOVII for a moment, once per launch.
+                var loading by rememberSaveable { mutableStateOf(true) }
+                LaunchedEffect(Unit) {
+                    delay(1_600)
+                    loading = false
+                }
+                Crossfade(targetState = loading, label = "launch") { showLoading ->
+                    if (showLoading) LoadingScreen() else AppRoot(app, this@MainActivity)
+                }
+            }
+        }
     }
 }
 
@@ -136,9 +168,10 @@ private fun AppRoot(app: StarHashApp, activity: ComponentActivity) {
     val tabs = listOf(Page.Tests, Page.Reports, Page.Settings)
     Scaffold(
         containerColor = Sh.Background,
+        contentColor = Sh.Ink,
         bottomBar = {
             if (page in tabs) {
-                NavigationBar(containerColor = Color.White) {
+                NavigationBar(containerColor = Sh.Bar) {
                     NavigationBarItem(
                         selected = page == Page.Tests, onClick = { stack = listOf(Page.Tests) },
                         icon = { Icon(Icons.Filled.Home, contentDescription = null) }, label = { Text("Tests") },

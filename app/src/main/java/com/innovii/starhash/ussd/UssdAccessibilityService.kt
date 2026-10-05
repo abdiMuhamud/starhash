@@ -41,15 +41,20 @@ class UssdAccessibilityService : AccessibilityService() {
         UssdBridge.offer(DialogReader.find(this))
     }
 
-    /** Types [text] into the pop-up and presses Send. Main thread; returns an error or null. */
-    fun reply(text: String): String? {
+    /** Types [text] into the pop-up's answer box. Main thread; returns an error or null. */
+    fun type(text: String): String? {
         val d = DialogReader.find(this) ?: return "The USSD pop-up is gone"
         val input = d.input ?: return "The USSD pop-up has no answer box"
         val args = Bundle().apply {
             putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, text)
         }
         input.performAction(AccessibilityNodeInfo.ACTION_FOCUS)
-        if (!input.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, args)) return "Could not type into the USSD pop-up"
+        return if (input.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, args)) null else "Could not type into the USSD pop-up"
+    }
+
+    /** Presses Send on the pop-up. Main thread; returns an error or null. */
+    fun send(): String? {
+        val d = DialogReader.find(this) ?: return "The USSD pop-up is gone"
         val send = d.sendButton() ?: return "The USSD pop-up has no Send button"
         return if (click(send.node)) null else "Could not press ${send.label}"
     }

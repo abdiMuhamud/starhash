@@ -24,6 +24,8 @@ test SIM, open it and follow the **Get the phone ready** card:
   a test runs. On Android 13+, if the switch is greyed out: *App info → ⋮ → Allow restricted settings*. On Xiaomi,
   Redmi, Tecno and Infinix, also allow *Autostart* and set *Battery saver* to *No restrictions*.
 
+StarHash works at **human pace** by default: it reads each menu for about 3 seconds, types the answer, waits a
+moment before pressing Send, and rests at least 6 seconds between codes (Settings → Pace; *Fast* is there too).
 During a run the USSD pop-ups appear and close by themselves; keep the screen on and don't touch them. The app comes
 back with the results at the end.
 

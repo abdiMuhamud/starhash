@@ -31,6 +31,19 @@ enum class Engine(val label: String) {
     DEMO("Demo network"),
 }
 
+/** How fast StarHash works through the menus. */
+@Serializable
+enum class Pace(val label: String) {
+    /** Reads each menu for a few seconds, types, then presses Send; rests between codes. Like a customer. */
+    HUMAN("Human pace"),
+
+    /** Answers as soon as a menu appears. */
+    FAST("Fast"),
+}
+
+@Serializable
+enum class Appearance(val label: String) { DARK("Dark"), LIGHT("Light"), PHONE("Follow the phone") }
+
 @Serializable
 data class TestCase(
     val id: String,
@@ -81,7 +94,18 @@ data class Settings(
     val engine: Engine = Engine.SCREEN,
     /** Android subscription id of the SIM to use; -1 = the phone's default. */
     val subscriptionId: Int = -1,
-)
+    val pace: Pace = Pace.HUMAN,
+    /** Human pace: seconds spent reading each menu before answering. */
+    val readSec: Int = 3,
+    val appearance: Appearance = Appearance.DARK,
+) {
+    val human: Boolean get() = pace == Pace.HUMAN
+
+    companion object {
+        /** Human pace never starts a new code sooner than this after the last one closed. */
+        const val HUMAN_MIN_PAUSE_SEC = 6
+    }
+}
 
 @Serializable
 enum class Status(val label: String) { PASS("Pass"), WARN("Check"), FAIL("Fail"), BLOCKED("Blocked") }

@@ -181,7 +181,7 @@ private fun CaseCard(c: CaseResult, currency: String) {
             for (s in c.sms) {
                 Text(
                     "✉ ${s.from}: ${s.body}", fontSize = 12.sp,
-                    modifier = Modifier.padding(top = 6.dp).clip(RoundedCornerShape(8.dp)).background(Sh.Background).padding(8.dp),
+                    modifier = Modifier.padding(top = 6.dp).clip(RoundedCornerShape(8.dp)).background(Sh.Inset).padding(8.dp),
                 )
             }
             if (open) {
@@ -196,10 +196,10 @@ private fun CaseCard(c: CaseResult, currency: String) {
 @Composable
 private fun Figure(label: String, value: String, modifier: Modifier, strong: Boolean = false) {
     Column(
-        modifier.clip(RoundedCornerShape(10.dp)).background(if (strong) Sh.VioletSoft else Sh.Background).padding(8.dp),
+        modifier.clip(RoundedCornerShape(10.dp)).background(if (strong) Sh.VioletSoft else Sh.Inset).padding(8.dp),
     ) {
         Text(label, fontSize = 11.sp, color = Sh.Muted)
-        Text(value, fontWeight = FontWeight.Bold, fontSize = 15.sp, color = if (strong) Sh.Violet else Sh.Ink)
+        Text(value, fontWeight = FontWeight.Bold, fontSize = 15.sp, color = if (strong) Sh.Accent else Sh.Ink)
     }
 }
 

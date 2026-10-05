@@ -62,7 +62,7 @@ class RunController(private val app: StarHashApp) {
         }
         val demo = app.demo
         val driver: UssdDriver = when (engine) {
-            Engine.SCREEN -> ScreenDriver(app, settings.subscriptionId)
+            Engine.SCREEN -> ScreenDriver(app, settings.subscriptionId, settings.human)
             Engine.ONE_SHOT -> OneShotDriver(app, settings.subscriptionId)
             Engine.DEMO -> demo
         }

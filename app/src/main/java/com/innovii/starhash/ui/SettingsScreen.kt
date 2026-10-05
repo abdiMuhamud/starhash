@@ -30,7 +30,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.innovii.starhash.core.Appearance
 import com.innovii.starhash.core.Engine
+import com.innovii.starhash.core.Pace
 import com.innovii.starhash.core.Settings
 import com.innovii.starhash.core.UssdText
 import com.innovii.starhash.ussd.SimInfo
@@ -56,6 +58,25 @@ fun SettingsScreen(
                     EngineRow(Engine.ONE_SHOT, settings.engine, "Android's USSD API, no pop-ups. Sends menus as one code (*400*4*1#), so only for networks that accept chained codes.", onChange)
                     EngineRow(Engine.DEMO, settings.engine, "A copy of the Telesom menus inside the app. No SIM, no charge: for training and demos.", onChange)
                 }
+            }
+
+            SectionTitle("Pace", "How fast StarHash answers the menus")
+            WhiteCard {
+                Column(Modifier.padding(vertical = 6.dp)) {
+                    Choice(
+                        Pace.HUMAN.label,
+                        "Like a customer: reads each menu for a few seconds, types the answer, presses Send, and rests at least " +
+                            "${Settings.HUMAN_MIN_PAUSE_SEC} s between codes. Best for the network and easy to follow.",
+                        settings.pace == Pace.HUMAN,
+                    ) { onChange { it.copy(pace = Pace.HUMAN) } }
+                    Choice(Pace.FAST.label, "Answers as soon as a menu appears.", settings.pace == Pace.FAST) {
+                        onChange { it.copy(pace = Pace.FAST) }
+                    }
+                }
+            }
+            if (settings.pace == Pace.HUMAN) {
+                Spacer(Modifier.height(8.dp))
+                NumberSetting("Reading time per menu", settings.readSec, 1..20) { v -> onChange { it.copy(readSec = v) } }
             }
 
             SectionTitle("SIM")
@@ -87,6 +108,23 @@ fun SettingsScreen(
             NumberSetting("Balance checks after subscribing", settings.chargeChecks, 1..10) { v -> onChange { it.copy(chargeChecks = v) } }
             NumberSetting("Pause between USSD sessions", settings.pauseSec, 0..60) { v -> onChange { it.copy(pauseSec = v) } }
             NumberSetting("Wait for the balance SMS", settings.smsWaitSec, 0..120) { v -> onChange { it.copy(smsWaitSec = v) } }
+
+            SectionTitle("Appearance")
+            WhiteCard {
+                Column(Modifier.padding(vertical = 6.dp)) {
+                    for (a in Appearance.entries) {
+                        Choice(
+                            a.label,
+                            when (a) {
+                                Appearance.DARK -> "Deep navy, soft text"
+                                Appearance.LIGHT -> "Grey-blue, for bright daylight"
+                                Appearance.PHONE -> "Dark or light, as the phone is set"
+                            },
+                            settings.appearance == a,
+                        ) { onChange { it.copy(appearance = a) } }
+                    }
+                }
+            }
 
             SectionTitle("Demo network")
             WhiteCard {

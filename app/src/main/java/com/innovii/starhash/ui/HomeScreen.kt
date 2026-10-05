@@ -75,7 +75,7 @@ fun HomeScreen(
             item {
                 NightCard {
                     Column(Modifier.padding(18.dp)) {
-                        Brand("USSD & VAS quality checks · INNOVII")
+                        Brand("USSD & VAS quality checks")
                         Spacer(Modifier.height(14.dp))
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             Chip(ws.settings.engine.label)
@@ -147,7 +147,7 @@ fun HomeScreen(
             }
         }
         if (selected.isNotEmpty() && live?.running != true) {
-            Box(Modifier.fillMaxWidth().background(Color.White).padding(horizontal = 16.dp, vertical = 10.dp)) {
+            Box(Modifier.fillMaxWidth().background(Sh.Bar).padding(horizontal = 16.dp, vertical = 10.dp)) {
                 Button(
                     onClick = { onRun("Selected tests", selected) },
                     colors = ButtonDefaults.buttonColors(containerColor = Sh.Violet),
@@ -185,12 +185,12 @@ private fun BigAction(title: String, hint: String, strong: Boolean = false, onCl
         colors = if (strong) {
             ButtonDefaults.buttonColors(containerColor = Sh.Teal, contentColor = Sh.Night)
         } else {
-            ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Sh.Night)
+            ButtonDefaults.buttonColors(containerColor = Sh.Card, contentColor = Sh.Ink)
         },
         elevation = ButtonDefaults.buttonElevation(defaultElevation = 1.dp),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
     ) {
-        Icon(Icons.Filled.Phone, contentDescription = null, modifier = Modifier.size(18.dp), tint = if (strong) Sh.Night else Sh.Violet)
+        Icon(Icons.Filled.Phone, contentDescription = null, modifier = Modifier.size(18.dp), tint = if (strong) Sh.Night else Sh.Accent)
         Spacer(Modifier.width(8.dp))
         Column {
             Text(title, fontWeight = FontWeight.Bold, fontSize = 15.sp)
@@ -202,9 +202,9 @@ private fun BigAction(title: String, hint: String, strong: Boolean = false, onCl
 @Composable
 fun KindBadge(kind: Kind) {
     val (bg, fg) = when (kind) {
-        Kind.SUBSCRIBE -> Color(0xFFFFF1E0) to Color(0xFFB45309)
-        Kind.EXPLORE -> Sh.TealSoft to Color(0xFF047857)
-        else -> Sh.VioletSoft to Sh.Violet
+        Kind.SUBSCRIBE -> Sh.AmberSoft to Sh.AmberInk
+        Kind.EXPLORE -> Sh.TealSoft to Sh.TealInk
+        else -> Sh.VioletSoft to Sh.Accent
     }
     Text(
         kind.label,

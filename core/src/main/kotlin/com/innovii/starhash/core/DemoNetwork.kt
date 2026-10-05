@@ -9,7 +9,8 @@ import kotlinx.coroutines.delay
 class DemoNetwork(
     var balance: Double = 1.00,
     private val now: () -> Long = System::currentTimeMillis,
-    private val answerDelayMs: Long = 600,
+    /** How long the pretend network takes to answer, like a real one (1–2 s). */
+    private val answerDelayMs: LongRange = 1_000L..2_200L,
     /** When false, subscribing sends the welcome SMS but takes no money (to see a revenue-leak FAIL). */
     var charges: Boolean = true,
 ) : UssdDriver, SmsSource {
@@ -26,7 +27,7 @@ class DemoNetwork(
     }
 
     override suspend fun dial(code: String, timeoutMs: Long): UssdReply {
-        delay(answerDelayMs)
+        delay(answerDelayMs.random())
         val c = UssdText.normalizeCode(code)
         node = when {
             c == "*122#" -> balanceMenu()
@@ -38,7 +39,7 @@ class DemoNetwork(
     }
 
     override suspend fun reply(text: String, timeoutMs: Long): UssdReply {
-        delay(answerDelayMs)
+        delay(answerDelayMs.random())
         val n = node ?: return UssdReply.Failed("No USSD session is open")
         node = n.next(text.trim()) ?: Node("Invalid choice. Please try again.")
         return show()!!

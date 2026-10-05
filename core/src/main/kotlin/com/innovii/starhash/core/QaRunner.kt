@@ -6,6 +6,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlin.math.abs
 import kotlin.math.max
+import kotlin.random.Random
 
 sealed interface RunEvent {
     data class CaseStarted(val index: Int, val total: Int, val case: TestCase) : RunEvent
@@ -23,6 +24,7 @@ class QaRunner(
     private val sms: SmsSource,
     private val now: () -> Long = System::currentTimeMillis,
     private val onEvent: (RunEvent) -> Unit = {},
+    private val random: Random = Random.Default,
 ) {
     private val cur get() = settings.currency
 
@@ -193,7 +195,9 @@ class QaRunner(
             if (!driver.supportsMenus) {
                 val full = UssdText.chain(code, path)
                 log.add(LogType.DIAL, full)
-                return Walk(screens, take(driver.dial(full, timeout), screens, log))
+                val failure = take(driver.dial(full, timeout), screens, log)
+                if (failure == null) read()
+                return Walk(screens, failure)
             }
             val c = UssdText.normalizeCode(code)
             log.add(LogType.DIAL, c)
@@ -203,10 +207,13 @@ class QaRunner(
                 if (!(r as UssdReply.Screen).canReply) {
                     return Walk(screens, "The menu closed before answer ${i + 1} (“$step”)")
                 }
+                read()
                 log.add(LogType.REPLY, step)
                 r = driver.reply(step, timeout)
             }
-            return Walk(screens, take(r, screens, log))
+            val failure = take(r, screens, log)
+            if (failure == null) read() // look at the last screen before closing it, as a person would
+            return Walk(screens, failure)
         } finally {
             withContext(NonCancellable) {
                 driver.close()
@@ -253,9 +260,19 @@ class QaRunner(
         return Balance(null, why, w.failure != null, w.last)
     }
 
+    /** Between two USSD sessions. Human pace rests at least [Settings.HUMAN_MIN_PAUSE_SEC], give or take. */
     private suspend fun pause() {
-        if (settings.pauseSec > 0) delay(settings.pauseSec * 1000L)
+        val sec = if (settings.human) max(settings.pauseSec, Settings.HUMAN_MIN_PAUSE_SEC) else settings.pauseSec
+        if (sec > 0) delay(humanize(sec * 1000L))
     }
+
+    /** Human pace: the time a person takes to read a menu before answering. */
+    private suspend fun read() {
+        if (settings.human && settings.readSec > 0) delay(humanize(settings.readSec * 1000L))
+    }
+
+    /** People are not metronomes: 80–130 % of the time asked for (only at human pace). */
+    private fun humanize(ms: Long): Long = if (settings.human) (ms * (0.8 + random.nextDouble() * 0.5)).toLong() else ms
 
     private inner class CaseLog {
         val lines = mutableListOf<LogLine>()

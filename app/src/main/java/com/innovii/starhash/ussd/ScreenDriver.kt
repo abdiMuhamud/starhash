@@ -10,7 +10,12 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 
 /** Dials like a person and reads the pop-ups through [UssdAccessibilityService]. Follows menus. */
-class ScreenDriver(private val context: Context, private val subscriptionId: Int) : UssdDriver {
+class ScreenDriver(
+    private val context: Context,
+    private val subscriptionId: Int,
+    /** Human pace: leave the typed answer on screen a moment before pressing Send. */
+    private val human: Boolean,
+) : UssdDriver {
     override val name = "Screen reader"
     override val supportsMenus = true
 
@@ -38,8 +43,9 @@ class ScreenDriver(private val context: Context, private val subscriptionId: Int
 
     override suspend fun reply(text: String, timeoutMs: Long): UssdReply {
         val service = UssdBridge.service ?: return UssdReply.Failed("The StarHash accessibility service stopped")
-        val error = withContext(Dispatchers.Main) { service.reply(text) }
-        if (error != null) return UssdReply.Failed(error)
+        withContext(Dispatchers.Main) { service.type(text) }?.let { return UssdReply.Failed(it) }
+        delay(if (human) TYPE_PAUSE_MS else 150)
+        withContext(Dispatchers.Main) { service.send() }?.let { return UssdReply.Failed(it) }
         return await(timeoutMs)
     }
 
@@ -71,5 +77,6 @@ class ScreenDriver(private val context: Context, private val subscriptionId: Int
 
     companion object {
         private const val POLL_MS = 1500L
+        private const val TYPE_PAUSE_MS = 900L
     }
 }

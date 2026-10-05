@@ -68,7 +68,10 @@ fun RunScreen(
 private fun RunHeader(live: LiveRun, onStop: () -> Unit, onOpenReport: (String) -> Unit) {
     NightCard {
         Column(Modifier.padding(18.dp)) {
-            Text(live.title, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(live.title, fontWeight = FontWeight.Bold, fontSize = 18.sp, modifier = Modifier.weight(1f))
+                InnoviiLogo(height = 18.dp)
+            }
             if (live.running) {
                 Text(
                     "Test ${live.index + 1} of ${live.total}: ${live.current?.name ?: "starting…"}",
@@ -134,13 +137,13 @@ fun LogBubble(l: LogLine) {
         }
         LogType.SCREEN -> Box(Modifier.fillMaxWidth().padding(vertical = 3.dp), contentAlignment = Alignment.CenterStart) {
             Text(
-                l.text, color = Color(0xFFEDEDED), fontSize = 13.sp, lineHeight = 18.sp,
+                l.text, color = Sh.BubbleInk, fontSize = 13.sp, lineHeight = 18.sp,
                 modifier = Modifier.widthIn(max = 320.dp).clip(RoundedCornerShape(14.dp, 14.dp, 14.dp, 4.dp))
-                    .background(Color(0xFF2A2A2E)).padding(horizontal = 14.dp, vertical = 10.dp),
+                    .background(Sh.Bubble).padding(horizontal = 14.dp, vertical = 10.dp),
             )
         }
         LogType.BALANCE -> Text(
-            "💰 ${l.text}", color = Color(0xFF047857), fontWeight = FontWeight.SemiBold, fontSize = 13.sp,
+            "💰 ${l.text}", color = Sh.TealInk, fontWeight = FontWeight.SemiBold, fontSize = 13.sp,
             modifier = Modifier.padding(vertical = 4.dp).clip(RoundedCornerShape(8.dp)).background(Sh.TealSoft)
                 .padding(horizontal = 10.dp, vertical = 5.dp),
         )

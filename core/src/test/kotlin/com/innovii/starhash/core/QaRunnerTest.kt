@@ -115,6 +115,25 @@ class QaRunnerTest {
     }
 
     @Test
+    fun `human pace reads each menu before answering and rests between codes`() = runTest {
+        suspend fun elapsed(pace: Pace): Long {
+            val start = testScheduler.currentTime
+            val now = { testScheduler.currentTime }
+            val net = DemoNetwork(now = now, answerDelayMs = 1_000L..1_000L)
+            val settings = Settings(pace = pace, readSec = 3, pauseSec = 2)
+            val case = TestCase("m", "Mobile Market", Kind.MENU, code = "*400#", path = listOf("4"))
+            QaRunner(net, settings, net, now, random = kotlin.random.Random(7)).run(listOf(case, case))
+            return testScheduler.currentTime - start
+        }
+        val fast = elapsed(Pace.FAST)
+        val human = elapsed(Pace.HUMAN)
+        // Fast: 2 answers of 1 s per code, 2 s between the codes.
+        assertEquals(6_000L, fast)
+        // Human: 2 reads of at least 2.4 s per code, and at least 4.8 s (80 % of 6 s) between the codes.
+        assertTrue(human - fast >= 4 * 2_400L + (4_800L - 2_000L), "human $human ms, fast $fast ms")
+    }
+
+    @Test
     fun `verdicts`() {
         val v = QaRunner::subscriptionVerdict
         assertEquals(Status.PASS, v(1.0, 0.5, 0.5, Outcome.SUCCESS, true, true, "USD").first)
