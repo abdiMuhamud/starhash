@@ -22,7 +22,7 @@ class OneShotDriver(private val context: Context, private val subscriptionId: In
     @SuppressLint("MissingPermission")
     override suspend fun dial(code: String, timeoutMs: Long): UssdReply =
         withTimeoutOrNull(timeoutMs) {
-            suspendCancellableCoroutine { cont ->
+            suspendCancellableCoroutine<UssdReply> { cont ->
                 try {
                     val base = context.getSystemService(TelephonyManager::class.java)
                         ?: throw IllegalStateException("this device has no telephony")
