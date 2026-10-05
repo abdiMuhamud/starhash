@@ -26,7 +26,6 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.OutlinedButton
@@ -71,8 +70,8 @@ fun HomeScreen(
         UssdText.normalizeCode(it.code) == code || (it.kind == Kind.BALANCE && code == balanceCode)
     }
 
-    Box(Modifier.fillMaxSize()) {
-        LazyColumn(contentPadding = PaddingValues(16.dp, 12.dp, 16.dp, 96.dp), modifier = Modifier.fillMaxSize()) {
+    Column(Modifier.fillMaxSize()) {
+        LazyColumn(contentPadding = PaddingValues(16.dp, 12.dp, 16.dp, 24.dp), modifier = Modifier.weight(1f)) {
             item {
                 NightCard {
                     Column(Modifier.padding(18.dp)) {
@@ -148,14 +147,19 @@ fun HomeScreen(
             }
         }
         if (selected.isNotEmpty() && live?.running != true) {
-            ExtendedFloatingActionButton(
-                onClick = { onRun("Selected tests", selected) },
-                icon = { Icon(Icons.Filled.PlayArrow, contentDescription = null) },
-                text = { Text("Run selected (${selected.size})") },
-                containerColor = Sh.Violet,
-                contentColor = Color.White,
-                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
-            )
+            Box(Modifier.fillMaxWidth().background(Color.White).padding(horizontal = 16.dp, vertical = 10.dp)) {
+                Button(
+                    onClick = { onRun("Selected tests", selected) },
+                    colors = ButtonDefaults.buttonColors(containerColor = Sh.Violet),
+                    shape = RoundedCornerShape(14.dp),
+                    contentPadding = PaddingValues(vertical = 14.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Icon(Icons.Filled.PlayArrow, contentDescription = null)
+                    Spacer(Modifier.width(6.dp))
+                    Text("Run selected (${selected.size})", fontWeight = FontWeight.Bold)
+                }
+            }
         }
     }
 }

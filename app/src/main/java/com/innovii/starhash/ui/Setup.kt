@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -82,16 +83,28 @@ fun SetupCard(state: SetupState, engine: Engine, onAskPermissions: () -> Unit, c
                     action = "Turn on", onAction = { openAccessibilitySettings(context) },
                 )
                 if (!state.accessibility) {
+                    if (Build.VERSION.SDK_INT >= 33) {
+                        Text(
+                            "“App was denied access” or “Restricted setting”? Android blocks this for apps installed " +
+                                "from a file, until you allow it once:",
+                            fontSize = 12.sp, color = Sh.Ink, modifier = Modifier.padding(top = 10.dp),
+                        )
+                        Text(
+                            "1. Tap Turn on once and close the warning (done if you saw it).\n" +
+                                "2. Open App info → ⋮ (top right) → Allow restricted settings → confirm with your PIN.\n" +
+                                "3. Tap Turn on again → StarHash USSD tester → On.",
+                            fontSize = 12.sp, color = Sh.Ink, lineHeight = 18.sp, modifier = Modifier.padding(top = 4.dp),
+                        )
+                    }
                     Text(
-                        (if (Build.VERSION.SDK_INT >= 33) {
-                            "Switch greyed out? Open App info → ⋮ → Allow restricted settings, then try again. "
-                        } else {
-                            ""
-                        }) + "On Xiaomi, Redmi, Tecno and Infinix also allow Autostart and set Battery saver to No restrictions, " +
+                        "On Xiaomi, Redmi, Tecno and Infinix also allow Autostart and set Battery saver to No restrictions, " +
                             "or the phone may switch the service off.",
                         fontSize = 12.sp, color = Sh.Muted, modifier = Modifier.padding(top = 8.dp),
                     )
-                    TextButton(onClick = { openAppInfo(context) }) { Text("Open App info") }
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        FilledTonalButton(onClick = { openAppInfo(context) }) { Text("Open App info") }
+                        TextButton(onClick = { openAccessibilitySettings(context) }) { Text("Accessibility") }
+                    }
                 }
             }
         }
